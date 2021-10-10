@@ -1,6 +1,6 @@
 class Tracker < ApplicationRecord
   has_many :points
-  
+
   def travel_time
     # TODO
   end

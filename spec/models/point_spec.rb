@@ -1,9 +1,9 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe Point, type: :model do
-  let (:point) { create :point }
+  let(:point) { create :point }
 
-  describe 'it responds to expected methods' do
+  describe "it responds to expected methods" do
     methods = %i[latitude longitude record_time coords gps_id]
     methods.each do |mthd|
       it "responds to #{mthd}" do
