@@ -22,3 +22,8 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+
+# Assumptions
+
+We don't need to store data about past routes. So, when user creates data with id of existing GPS transmitter,
+it simply resets its route by deleting all existing points.
