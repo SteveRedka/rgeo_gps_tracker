@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Tracker, type: :model do
-  let (:tracker) { Tracker.new(gps_id: '111', driver_initials: 'SNR', vehicle_registration_id: 'AA111CR') }
+  let (:tracker) { create :tracker }
 
   describe 'it responds to expected methods' do
     methods = %i[gps_id driver_initials vehicle_registration_id travel_time

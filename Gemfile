@@ -43,6 +43,7 @@ gem 'jbuilder'
 group :development, :test do
   gem 'rspec-rails', '~> 4.0.0'
   gem "standard"
+  gem 'factory_bot_rails'
 end
 
 gem 'activerecord-postgis-adapter'
