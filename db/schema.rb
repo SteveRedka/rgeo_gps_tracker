@@ -10,10 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_10_123038) do
+ActiveRecord::Schema.define(version: 2021_10_10_130027) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "postgis"
+
+  create_table "points", force: :cascade do |t|
+    t.geometry "coords", limit: {:srid=>0, :type=>"st_point"}
+    t.datetime "record_time"
+    t.bigint "tracker_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["tracker_id"], name: "index_points_on_tracker_id"
+  end
 
   create_table "trackers", force: :cascade do |t|
     t.string "gps_id"
