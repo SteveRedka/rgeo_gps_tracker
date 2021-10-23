@@ -17,9 +17,20 @@ class Point < ApplicationRecord
 
   def latlon=(arg)
     if arg.is_a?(Hash)
-      self.coords = GisOperations.hash_to_point(arg)
-    else
+      coords = arg.symbolize_keys
+      if coords[:lat].blank? || (coords[:lng].blank? && coords[:lon].blank?)
+        raise ArgumentError.new("keys missing: #{arg} needs :lat and either :lng or :lon")
+      end
+
+      self.coords = GisOperations.to_rgeo_point(coords[:lat], (coords[:lng] || coords[:lon]))
+    elsif arg.is_a?(RGeo::Cartesian::PointImpl) or arg.is_a?(String)
       self.coords = arg
+    else
+      raise ArgumentError.new("Wrong class for coords: #{arg.class}")
     end
+  end
+
+  def latlon
+    { lat: coords.x, lon: coords.y }
   end
 end
