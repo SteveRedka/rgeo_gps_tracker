@@ -16,4 +16,24 @@ FactoryBot.define do
       end
     end
   end
+
+  factory :tracker_with_isosceles_right_triangle_route, class: 'Tracker' do
+    # pt1 ------- 1 km --------- pt2
+    #                             |
+    #                             |
+    #                             |
+    #                            1 km
+    #                             |
+    #                             |
+    #                             |
+    #                             pt3
+    gps_id { "112" }
+    driver_initials { "SNR" }
+    vehicle_registration_id { "AA111CR" }
+    after(:create) do |trckr|
+      create(:point, latlon: { lat: 35.79282335, lng: -114.99325126 }, record_time: 3000.seconds.ago, tracker: trckr)
+      create(:point, latlon: { lat: 35.7930148, lng: -114.9821806 }, record_time: 2000.seconds.ago, tracker: trckr)
+      create(:point, latlon: { lat: 35.7839985, lng: -114.9820840 }, record_time: 1000.seconds.ago, tracker: trckr)
+    end
+  end
 end

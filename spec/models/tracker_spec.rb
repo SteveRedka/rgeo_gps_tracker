@@ -4,7 +4,7 @@ RSpec.describe Tracker, type: :model do
   let(:empty_tracker) { create :tracker, points_count: 0 }
   let(:tracker_with_one_point) { create :tracker, points_count: 1 }
   let(:tracker) { create :tracker, points_count: 5 }
-  let(:tracker_with_three_points) { create :tracker, points_count: 3 }
+  let(:tracker_with_isosceles_right_triangle_route) { create :tracker_with_isosceles_right_triangle_route }
 
   describe "it responds to expected methods" do
     methods = %i[gps_id driver_initials vehicle_registration_id travel_time
@@ -47,17 +47,41 @@ RSpec.describe Tracker, type: :model do
     end
 
     it "sums distances between each pair of consecutive points" do
+      expect(tracker_with_isosceles_right_triangle_route.track_distance).to be_within(10).of(2000.0)
     end
   end
 
   describe '#average_speed' do
-    it "returns zero with too few points" do
-        expect(empty_tracker.average_speed).to eq 0
-        expect(tracker_with_one_point.average_speed).to eq 0
+    context "m/s" do
+      it "returns zero with too few points" do
+          expect(empty_tracker.average_speed).to eq 0
+          expect(tracker_with_one_point.average_speed).to eq 0
+      end
+
+      context "two points" do
+        it "measures average speed on track with two points" do
+          tracker = empty_tracker
+          create :point, tracker: tracker, coords: "POINT(-114.9821806 35.7930148)", record_time: 2.hours.ago
+          create :point, tracker: tracker, coords: "POINT(-114.99325126 35.79282335)", record_time: tracker.points.last.record_time + 1000.seconds
+          expect(tracker.average_speed).to be_within(0.1).of(1.0)
+        end
+
+        it "measures average speed on track with more than two points" do
+          trckr = tracker_with_isosceles_right_triangle_route
+          expect(trckr.average_speed).to be_within(0.1).of(1.0)
+          trckr.points.first.update(record_time: trckr.points.last.record_time - 5000.seconds)
+          expect(trckr.average_speed).to be_within(0.1).of(0.5)
+        end
+      end
     end
 
-    context "two points" do
-      it "measures average speed on track with two points"
+    context 'km/h' do
+      it "measures average speed on track with two points" do
+        tracker = empty_tracker
+        create :point, tracker: tracker, coords: "POINT(-114.9821806 35.7930148)", record_time: 2.hours.ago
+        create :point, tracker: tracker, coords: "POINT(-114.99325126 35.79282335)", record_time: tracker.points.last.record_time + 1.hour
+        expect(tracker.average_speed('kmh')).to be_within(0.1).of(1.0)
+      end
     end
   end
 
