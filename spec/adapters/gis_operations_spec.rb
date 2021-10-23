@@ -31,6 +31,15 @@ RSpec.describe GisOperations do
   end
 
   describe '#self.track_distance' do
+    # pt1 ------- 1 km --------- pt2
+    #                             |
+    #                             |
+    #                             |
+    #                            1 km
+    #                             |
+    #                             |
+    #                             |
+    #                             pt3
     let(:pt1) { GisOperations.hash_to_point(lat: 35.79282335, lng: -114.99325126) }
     let(:pt2) { GisOperations.hash_to_point(lat: 35.7930148, lng: -114.9821806) }
     let(:pt3) { GisOperations.hash_to_point(lat: 35.7839985, lng: -114.9820840) }

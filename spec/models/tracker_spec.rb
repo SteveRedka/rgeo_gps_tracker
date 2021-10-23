@@ -1,10 +1,11 @@
 require "rails_helper"
 
 RSpec.describe Tracker, type: :model do
+  let(:tracker) { create :tracker, points_count: 5 }
   let(:empty_tracker) { create :tracker, points_count: 0 }
   let(:tracker_with_one_point) { create :tracker, points_count: 1 }
-  let(:tracker) { create :tracker, points_count: 5 }
   let(:tracker_with_isosceles_right_triangle_route) { create :tracker_with_isosceles_right_triangle_route }
+  let(:tracker_with_two_points_going_one_km_east) { create :tracker_with_two_points_going_one_km_east }
 
   describe "it responds to expected methods" do
     methods = %i[gps_id driver_initials vehicle_registration_id travel_time
@@ -40,10 +41,7 @@ RSpec.describe Tracker, type: :model do
 
   describe '#track_distance' do
     it 'sums distance between two points' do
-      tracker = empty_tracker
-      create :point, tracker: tracker, coords: "POINT(-114.9821806 35.7930148)", record_time: 2.hours.ago
-      create :point, tracker: tracker, coords: "POINT(-114.99325126 35.79282335)", record_time: tracker.points.last.record_time + 1.hour
-      expect(tracker.track_distance).to be_within(10).of(1000.0)
+      expect(tracker_with_two_points_going_one_km_east.track_distance).to be_within(10).of(1000.0)
     end
 
     it "sums distances between each pair of consecutive points" do
@@ -60,10 +58,7 @@ RSpec.describe Tracker, type: :model do
 
       context "two points" do
         it "measures average speed on track with two points" do
-          tracker = empty_tracker
-          create :point, tracker: tracker, coords: "POINT(-114.9821806 35.7930148)", record_time: 2.hours.ago
-          create :point, tracker: tracker, coords: "POINT(-114.99325126 35.79282335)", record_time: tracker.points.last.record_time + 1000.seconds
-          expect(tracker.average_speed).to be_within(0.1).of(1.0)
+          expect(tracker_with_two_points_going_one_km_east.average_speed).to be_within(0.1).of(1.0)
         end
 
         it "measures average speed on track with more than two points" do
@@ -77,20 +72,63 @@ RSpec.describe Tracker, type: :model do
 
     context 'km/h' do
       it "measures average speed on track with two points" do
-        tracker = empty_tracker
-        create :point, tracker: tracker, coords: "POINT(-114.9821806 35.7930148)", record_time: 2.hours.ago
-        create :point, tracker: tracker, coords: "POINT(-114.99325126 35.79282335)", record_time: tracker.points.last.record_time + 1.hour
-        expect(tracker.average_speed('kmh')).to be_within(0.1).of(1.0)
+        @tracker = create :tracker, points_count: 0
+        create :point, tracker: @tracker, coords: "POINT(-114.9821806 35.7930148)",
+                       record_time: 2.hours.ago
+        create :point, tracker: @tracker, coords: "POINT(-114.99325126 35.79282335)",
+                       record_time: @tracker.points.first.record_time + 1.hour
+        expect(@tracker.average_speed('kmh')).to be_within(0.1).of(1.0)
       end
     end
   end
 
   describe '#movement_direction' do
-    it "outputs a hash"
+    before do
+      @trckr = create :tracker, points_count: 0
+      create :point, tracker: @trckr, latlon: { lat: -45, lng: 35 }, record_time: 2.minutes.ago
+      create :point, tracker: @trckr, latlon: { lat: -45, lng: 35 }, record_time: 1.minutes.ago
+      @second_point = @trckr.points.last
+      @zero_point = { lat: -45, lng: 35 }
+    end
 
-    it "outputs a cardinal direction of tracker's movement during last hour"
+    it "outputs none if there are no points" do
+      expect(empty_tracker.movement_direction).to eq 'none'
+    end
 
-    it "outputs time spent moving in that direction during last hour"
+    it "outputs none if there is only one point during last hour" do
+      expect(tracker_with_one_point.movement_direction).to eq 'none'
+    end
+
+    it 'ignores data before last hour' do
+      @tracker_with_old_pts = create :tracker, points_count: 0
+      create :point, tracker: @trckr, latlon: { lat: -45, lng: 34 }, record_time: 2.hours.ago
+      create :point, tracker: @trckr, latlon: { lat: -45.1, lng: 35 }, record_time: 1.minutes.ago
+      expect(@tracker_with_old_pts.movement_direction).to eq 'none'
+    end
+
+    coords_relative_to_zero_point = {
+      'E': { lat: -45, lng: 35.1 },
+      'W': { lat: -45, lng: 34.9 },
+      'N': { lat: -44.9, lng: 35 },
+      'S': { lat: -45.1, lng: 35 }
+    }
+
+    coords_relative_to_zero_point.each do |dir, latlon|
+
+      it "outputs a cardinal direction of tracker's movement while moving #{dir}" do
+        @second_point.update(latlon: latlon)
+        expect(@trckr.movement_direction).to eq(dir.to_s)
+      end
+    end
+
+    it 'outputs diagonal directions'
   end
 
+  describe '#time_moved_in_direction' do
+    it "outputs time spent moving in dominant direction during last hour"
+
+    it 'ignores data before last hour'
+
+    it 'handles lack of data smh'
+  end
 end
