@@ -31,4 +31,23 @@ module GisOperations
     linestring = factory.line_string(arr)
     linestring.length
   end
+
+  # Outputs the direction of second point relative to the first point
+  # @param a [RGeo::Geographic::SphericalPointImpl] Точка А
+  # @param b [RGeo::Geographic::SphericalPointImpl] Точка Б
+  # @return [String] ('N'|'S'|'W'|'E')
+  def self.direction_of_point(a:, b:)
+    x = b.coords.x - a.coords.x
+    y = b.coords.y - a.coords.y
+    atan = Math.atan2(x, y)
+    if -0.7853981633974483 <= atan && 0.7853981633974483 >= atan
+      return 'N'
+    elsif 0.7853981633974483 <= atan && 2.356194490192345 >= atan
+      return 'E'
+    elsif -2.356194490192345 <= atan && -0.7853981633974483 >= atan
+      return 'W'
+    else
+      return 'S'
+    end
+  end
 end

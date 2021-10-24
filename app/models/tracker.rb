@@ -32,20 +32,8 @@ class Tracker < ApplicationRecord
     points_last_hour = points.where("record_time >= :date", date: 1.hour.ago)
     return 'none' if points_last_hour.count < 2
 
-    second_point = points_last_hour.last
     first_point = points_last_hour.first
-    x = second_point.coords.x - first_point.coords.x
-    y = second_point.coords.y - first_point.coords.y
-    atan = Math.atan2(x, y)
-    if -0.7853981633974483 <= atan && 0.7853981633974483 >= atan
-      dir = 'N'
-    elsif 0.7853981633974483 <= atan && 2.356194490192345 >= atan
-      dir = 'E'
-    elsif -2.356194490192345 <= atan && -0.7853981633974483 >= atan
-      dir = 'W'
-    else
-      dir = 'S'
-    end
-    return dir
+    last_point = points_last_hour.last
+    GisOperations.direction_of_point(a: first_point, b: last_point)
   end
 end
