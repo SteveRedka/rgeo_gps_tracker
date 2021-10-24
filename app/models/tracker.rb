@@ -34,6 +34,23 @@ class Tracker < ApplicationRecord
 
     first_point = points_last_hour.first
     last_point = points_last_hour.last
-    GisOperations.direction_of_point(a: first_point, b: last_point)
+    GisOperations.direction_of_point(a: first_point.coords, b: last_point.coords)
+  end
+
+  def time_moving_in_dominant_direction
+    points_last_hour = points.where("record_time >= :date", date: 1.hour.ago)
+    return 0 if points_last_hour.count < 2
+
+    dominant_direction = movement_direction
+    total_time = 0
+    (1...points_last_hour.length).each do |i|
+      pt1 = points_last_hour[i-1]
+      pt2 = points_last_hour[i]
+      if GisOperations.direction_of_point(a: pt1.coords, b: pt2.coords) == dominant_direction
+        total_time += pt2.record_time - pt1.record_time
+      end
+    end
+
+    total_time
   end
 end

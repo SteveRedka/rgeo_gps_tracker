@@ -75,7 +75,7 @@ RSpec.describe GisOperations do
 
       it "outputs a cardinal direction of second point" do
         @second_point.update(latlon: latlon)
-        expect(GisOperations.direction_of_point(a: @first_point, b: @second_point)).to eq(dir.to_s)
+        expect(GisOperations.direction_of_point(a: @first_point.coords, b: @second_point.coords)).to eq(dir.to_s)
       end
     end
   end

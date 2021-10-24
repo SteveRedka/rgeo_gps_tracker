@@ -37,8 +37,8 @@ module GisOperations
   # @param b [RGeo::Geographic::SphericalPointImpl] Точка Б
   # @return [String] ('N'|'S'|'W'|'E')
   def self.direction_of_point(a:, b:)
-    x = b.coords.x - a.coords.x
-    y = b.coords.y - a.coords.y
+    x = b.x - a.x
+    y = b.y - a.y
     atan = Math.atan2(x, y)
     if -0.7853981633974483 <= atan && 0.7853981633974483 >= atan
       return 'N'

@@ -3,6 +3,8 @@ class Point < ApplicationRecord
 
   belongs_to :tracker, optional: true
 
+  default_scope { order(record_time: :asc) }
+
   def gps_id
     tracker.gps_id
   end

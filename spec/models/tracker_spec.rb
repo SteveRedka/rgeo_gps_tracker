@@ -9,7 +9,7 @@ RSpec.describe Tracker, type: :model do
 
   describe "it responds to expected methods" do
     methods = %i[gps_id driver_initials vehicle_registration_id travel_time
-      average_speed track_distance movement_direction]
+      average_speed track_distance movement_direction time_moving_in_dominant_direction]
     methods.each do |mthd|
       it "responds to #{mthd}" do
         expect(tracker).to respond_to(mthd)
@@ -46,6 +46,14 @@ RSpec.describe Tracker, type: :model do
 
     it "sums distances between each pair of consecutive points" do
       expect(tracker_with_isosceles_right_triangle_route.track_distance).to be_within(10).of(2000.0)
+    end
+
+    it "tracks order of points by record_time, not other fields" do
+      @trckr = create :tracker, points_count: 0
+      create :point, tracker: @trckr, latlon: { lat: 35.7930148, lng: -114.9821806 }, record_time: 3000.seconds.ago
+      create :point, tracker: @trckr, latlon: { lat: 35.79282335, lng: -114.99325126 }, record_time: 2000.seconds.ago
+      create :point, tracker: @trckr, latlon: { lat: 35.792919075, lng: -114.98771593 }, record_time: 2500.seconds.ago
+      expect(@trckr.track_distance).to be_within(10).of(1000.0)
     end
   end
 
@@ -124,11 +132,28 @@ RSpec.describe Tracker, type: :model do
     it 'outputs diagonal directions'
   end
 
-  describe '#time_moved_in_direction' do
-    it "outputs time spent moving in dominant direction during last hour"
+  describe '#time_moving_in_dominant_direction' do
+    it 'returns zero if there is one or less points' do
+      @trckr = create :tracker, points_count: 0
+      expect(@trckr.time_moving_in_dominant_direction).to eq(0)
+      create :point, tracker: @trckr, record_time: 5.minutes.ago
+      expect(@trckr.time_moving_in_dominant_direction).to eq(0)
+    end
 
-    it 'ignores data before last hour'
+    it "outputs time spent moving in dominant direction during last hour" do
+      @trckr = create :tracker, points_count: 0
+      create :point, tracker: @trckr, latlon: { lat: -45, lng: 35 }, record_time: 5.minutes.ago
+      create :point, tracker: @trckr, latlon: { lat: -45.1, lng: 35.1 }, record_time: 4.minutes.ago
+      create :point, tracker: @trckr, latlon: { lat: -45.2, lng: 35.1 }, record_time: 3.minutes.ago
+      create :point, tracker: @trckr, latlon: { lat: -45.3, lng: 35.1 }, record_time: 2.minutes.ago
+      expect(@trckr.time_moving_in_dominant_direction).to be_within(5.seconds).of(2.minutes)
+    end
 
-    it 'handles lack of data smh'
+    it 'ignores data before last hour' do
+      @trckr = create :tracker, points_count: 0
+      create :point, tracker: @trckr, latlon: { lat: -45, lng: 35 }, record_time: 5.hours.ago
+      create :point, tracker: @trckr, latlon: { lat: -45.1, lng: 35.1 }, record_time: 5.minutes.ago
+      expect(@trckr.time_moving_in_dominant_direction).to eq(0)
+    end
   end
 end
