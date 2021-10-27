@@ -1,3 +1,5 @@
+recuire 'factory_bot_rails'
+
 class Api::DebugController < ApplicationController
   def reset_db
     Tracker.destroy_all

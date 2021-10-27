@@ -5,7 +5,6 @@ RSpec.describe 'api/points', type: :request do
   let!(:tracker) { create :tracker, gps_id: '123p', points_count: 3 }
 
   path '/api/trackers/{gps_id}/points' do
-    # You'll want to customize the parameter types...
     parameter name: 'gps_id', in: :path, type: :string, description: 'gps_id'
 
     post('create point') do
@@ -42,10 +41,7 @@ RSpec.describe 'api/points', type: :request do
 
       response(404, 'tracker not found') do
         let(:gps_id) { 'undefined' }
-<<<<<<< HEAD
-=======
         let(:point) { { point: { lat: 35.7, lng: -114.1, record_time: Time.now } } }
->>>>>>> feat: PointsController
         run_test!
       end
     end

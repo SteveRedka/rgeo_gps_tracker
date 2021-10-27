@@ -7,7 +7,7 @@ Rails.application.routes.draw do
       post 'points', to: 'points#create'
       get 'points', to: 'points#index'
     end
-    post 'debug#reset_db'
+    post 'reset_db', to: 'debug#reset_db'
   end
   mount Rswag::Ui::Engine => '/api-docs'
   mount Rswag::Api::Engine => '/api-docs'
