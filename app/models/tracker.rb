@@ -3,6 +3,8 @@ class Tracker < ApplicationRecord
 
   has_many :points
 
+  validates :gps_id, :driver_initials, :vehicle_registration_id, presence: true
+
   # returns travel time in seconds
   def travel_time
     return 0 if points.count < 2

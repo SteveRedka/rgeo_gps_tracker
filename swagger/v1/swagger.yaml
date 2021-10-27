@@ -1,0 +1,64 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/api/trackers":
+    post:
+      summary: create tracker
+      tags:
+      - tracker
+      parameters: []
+      responses:
+        '201':
+          description: tracker created
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tracker:
+                  gps_id:
+                    type: string
+                  driver_initials:
+                    type: string
+                  vehicle_registration_id:
+                    type: string
+              required:
+                tracker:
+                - gps_id
+                - driver_initials
+                - vehicle_registration_id
+    get:
+      summary: list trackers
+      tags:
+      - tracker
+      responses:
+        '200':
+          description: successful
+  "/api/trackers/{gps_id}":
+    get:
+      summary: show tracker
+      tags:
+      - tracker
+      parameters:
+      - name: gps_id
+        in: path
+        description: id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: Tracker not found
+servers:
+- url: https://{defaultHost}
+  variables:
+    defaultHost:
+      default: www.example.com
