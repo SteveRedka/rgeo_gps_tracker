@@ -40,11 +40,11 @@ module GisOperations
     x = b.x - a.x
     y = b.y - a.y
     atan = Math.atan2(x, y)
-    if -0.7853981633974483 <= atan && 0.7853981633974483 >= atan
+    if atan.between?(-0.7853981633974483, 0.7853981633974483)
       "N"
-    elsif 0.7853981633974483 <= atan && 2.356194490192345 >= atan
+    elsif atan.between?(0.7853981633974483, 2.356194490192345)
       "E"
-    elsif -2.356194490192345 <= atan && -0.7853981633974483 >= atan
+    elsif atan.between?(-2.356194490192345, -0.7853981633974483)
       "W"
     else
       "S"

@@ -56,7 +56,6 @@ RSpec.describe "api/points", type: :request do
           }
         end
         run_test! do
-          response_json = JSON.parse(response.body)
           tracker.points.each do |pt|
             expect(response.body).to match(pt.latlon[:lat].to_s)
             expect(response.body).to match(pt.latlon[:lng].to_s)
