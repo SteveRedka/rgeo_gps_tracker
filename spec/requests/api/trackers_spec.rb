@@ -12,16 +12,14 @@ RSpec.describe 'api/trackers', type: :request do
       parameter name: :tracker, in: :body, schema: {
         type: :object,
         properties: {
-          tracker: {
             gps_id: { type: :string },
             driver_initials: { type: :string },
             vehicle_registration_id: { type: :string }
-          }
         },
-        required: { tracker: [:gps_id, :driver_initials, :vehicle_registration_id] }
+        required: [ :gps_id, :driver_initials, :vehicle_registration_id]
       }
       response '201', 'tracker created' do
-        let(:tracker) { { tracker: { gps_id: 'foo', driver_initials: 'bar', vehicle_registration_id: 'KR123A' } } }
+        let(:tracker) { { gps_id: 'foo', driver_initials: 'bar', vehicle_registration_id: 'KR123A' } }
         run_test! do |response|
           expect(Tracker.last.gps_id).to eq 'foo'
         end
@@ -32,7 +30,7 @@ RSpec.describe 'api/trackers', type: :request do
           before do
             create :tracker, gps_id: 'overwrite', points_count: 1
           end
-          let(:tracker) { { tracker: { gps_id: 'overwrite', driver_initials: 'bar', vehicle_registration_id: 'KR123A' } } }
+          let(:tracker) { { gps_id: 'overwrite', driver_initials: 'bar', vehicle_registration_id: 'KR123A' } }
           run_test! do |response|
             expect(Tracker.last.gps_id).to eq 'overwrite'
             expect(Tracker.last.driver_initials).to eq 'bar'

@@ -13,17 +13,16 @@ RSpec.describe 'api/points', type: :request do
       parameter name: :point, in: :body, schema: {
         type: :object,
         properties: {
-          tracker: {
-            record_time: { type: 'string', format: 'date-time', required: 'true' },
-            lat: { type: 'float', required: 'true' },
-            lng: { type: 'float', required: 'true' }
-          }
-        }
+          record_time: { type: 'string', format: 'date-time', required: 'true' },
+          lat: { type: 'number', minumum: -90.0, maximum: 90.0, format: 'float', required: 'true' },
+          lng: { type: 'number', minimum: -180, maximum: 180.0, format: 'float', required: 'true' }
+        },
+        required: [ :record_time, :lat, :lng]
       }
 
       response(201, 'point created') do
         let(:gps_id) { '123p' }
-        let(:point) { { point: { lat: 35.7, lng: -114.1, record_time: Time.now } } }
+        let(:point) { { lat: 35.7, lng: -114.1, record_time: Time.now } }
 
         run_test! do
           response_json = JSON.parse(response.body)
@@ -34,14 +33,14 @@ RSpec.describe 'api/points', type: :request do
 
       response(422, 'invalid request') do
         let(:gps_id) { '123p' }
-        let(:point) { { point: { record_time: Time.now } } }
+        let(:point) { { record_time: Time.now } }
 
         run_test!
       end
 
       response(404, 'tracker not found') do
         let(:gps_id) { 'undefined' }
-        let(:point) { { point: { lat: 35.7, lng: -114.1, record_time: Time.now } } }
+        let(:point) { { lat: 35.7, lng: -114.1, record_time: Time.now } }
         run_test!
       end
     end

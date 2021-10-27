@@ -26,7 +26,7 @@ class Api::PointsController < ApplicationController
   private
 
   def point_params
-    params.require(:point).permit(:lat, :lng, :record_time)
+    params.permit(:lat, :lng, :record_time)
   end
 
   def tracker_params
