@@ -27,6 +27,21 @@ RSpec.describe 'api/trackers', type: :request do
         end
       end
 
+      context 'when tracker with this id already exists' do
+        response '201', 'tracker created' do
+          before do
+            create :tracker, gps_id: 'overwrite', points_count: 1
+          end
+          let(:tracker) { { tracker: { gps_id: 'overwrite', driver_initials: 'bar', vehicle_registration_id: 'KR123A' } } }
+          run_test! do |response|
+            expect(Tracker.last.gps_id).to eq 'overwrite'
+            expect(Tracker.last.driver_initials).to eq 'bar'
+            expect(Tracker.last.points.count).to eq 0
+            expect(Tracker.where(gps_id: 'overwrite').count).to eq 1
+          end
+        end
+      end
+
       response '422', 'invalid request' do
         let(:tracker) { { gps_id: 'foo' } }
         run_test!
