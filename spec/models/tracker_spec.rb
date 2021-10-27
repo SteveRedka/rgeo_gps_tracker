@@ -17,6 +17,13 @@ RSpec.describe Tracker, type: :model do
     end
   end
 
+  describe 'gps_id' do
+    it 'is unique' do
+      create :tracker, gps_id: 'foo'
+      expect {create :tracker, gps_id: 'foo'}.to raise_error(/duplicate key value violates unique constraint/)
+    end
+  end
+
   it "has points" do
     expect(tracker.points.count).to be > 1
     expect(tracker.points.first).to be_a Point

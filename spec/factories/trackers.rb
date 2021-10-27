@@ -1,6 +1,8 @@
 FactoryBot.define do
   factory :tracker do
-    gps_id { "111" }
+    sequence(:gps_id) do |n|
+      "111-#{n}"
+    end
     driver_initials { "SNR" }
     vehicle_registration_id { "AA111CR" }
     transient do
