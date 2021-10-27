@@ -5,6 +5,8 @@ class Point < ApplicationRecord
 
   default_scope { order(record_time: :asc) }
 
+  validates :coords, presence: true
+
   def gps_id
     tracker.gps_id
   end
@@ -21,18 +23,18 @@ class Point < ApplicationRecord
     if arg.is_a?(Hash)
       coords = arg.symbolize_keys
       if coords[:lat].blank? || (coords[:lng].blank? && coords[:lon].blank?)
-        raise ArgumentError.new("keys missing: #{arg} needs :lat and either :lng or :lon")
+        errors.add(:coords, message: "keys missing: #{arg} needs :lat and either :lng or :lon")
+      else
+        self.coords = GisOperations.to_rgeo_point(coords[:lat], (coords[:lng] || coords[:lon]))
       end
-
-      self.coords = GisOperations.to_rgeo_point(coords[:lat], (coords[:lng] || coords[:lon]))
     elsif arg.is_a?(RGeo::Cartesian::PointImpl) or arg.is_a?(String)
       self.coords = arg
     else
-      raise ArgumentError.new("Wrong class for coords: #{arg.class}")
+      errors.add(:coords, message: "Wrong class for coords: #{arg.class}")
     end
   end
 
   def latlon
-    { lat: coords.x, lon: coords.y }
+    { lat: coords.y, lon: coords.x }
   end
 end

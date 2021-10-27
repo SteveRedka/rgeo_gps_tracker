@@ -3,6 +3,10 @@ Rails.application.routes.draw do
     post 'trackers', to: 'trackers#create'
     get 'trackers', to: 'trackers#index'
     get '/trackers/:gps_id', to: 'trackers#show'
+    resources :trackers do
+      post 'points', to: 'points#create'
+      get 'points', to: 'points#index'
+    end
   end
   mount Rswag::Ui::Engine => '/api-docs'
   mount Rswag::Api::Engine => '/api-docs'
