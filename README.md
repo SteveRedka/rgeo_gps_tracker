@@ -1,27 +1,24 @@
-# README
+# Rgeo tracker
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A service that keeps track of gps tracker movements.
 
-Things you may want to cover:
+## System requirements
+Postgresql 10.18+
+PostGIS
+ruby 2.7.2+
 
-* Ruby version
+## Installation
 
-* System dependencies
+```bash
+git clone git@github.com:SteveRedka/rgeo_gps_tracker.git
+cd rgeo_gps_tracker
+bundle
+rake db:migrate
+rails server
+```
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## docs
+http://127.0.0.1:3000/api-docs/index.html
 
 # Assumptions
 

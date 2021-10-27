@@ -5,3 +5,7 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+FactoryBot.create :tracker, points_count: 5
+FactoryBot.create :tracker, points_count: 7
+FactoryBot.create :tracker, points_count: 10

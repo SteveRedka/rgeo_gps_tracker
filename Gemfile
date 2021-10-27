@@ -46,14 +46,13 @@ group :development, :test do
   gem "factory_bot_rails"
   gem "pry"
   gem "simplecov"
-  gem 'rswag-specs'
+  gem "rswag-specs"
 end
 
 gem "activerecord-postgis-adapter"
-gem 'rswag-api'
-gem 'rswag-ui'
+gem "rswag-api"
+gem "rswag-ui"
 
 group :test do
-  gem 'database_cleaner-active_record'
-
+  gem "database_cleaner-active_record"
 end

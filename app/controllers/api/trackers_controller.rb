@@ -1,6 +1,8 @@
 class Api::TrackersController < ApplicationController
   def create
-    @tracker = Tracker.create(tracker_params)
+    @tracker = Tracker.find_or_initialize_by(gps_id: tracker_params[:gps_id])
+    @tracker.update(tracker_params)
+    @tracker.points.destroy_all
     if @tracker.valid?
       render status: 201
     else

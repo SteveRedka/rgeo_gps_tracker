@@ -4,6 +4,59 @@ info:
   title: API V1
   version: v1
 paths:
+  "/api/trackers/{gps_id}/points":
+    parameters:
+    - name: gps_id
+      in: path
+      description: gps_id
+      required: true
+      schema:
+        type: string
+    post:
+      summary: create point
+      tags:
+      - point
+      parameters: []
+      responses:
+        '201':
+          description: point created
+        '422':
+          description: invalid request
+        '404':
+          description: tracker not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                record_time:
+                  type: string
+                  format: date-time
+                  required: 'true'
+                lat:
+                  type: number
+                  minumum: -90.0
+                  maximum: 90.0
+                  format: float
+                  required: 'true'
+                lng:
+                  type: number
+                  minimum: -180
+                  maximum: 180.0
+                  format: float
+                  required: 'true'
+              required:
+              - record_time
+              - lat
+              - lng
+    get:
+      summary: list points
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: tracker not found
   "/api/trackers":
     post:
       summary: create tracker
@@ -21,18 +74,16 @@ paths:
             schema:
               type: object
               properties:
-                tracker:
-                  gps_id:
-                    type: string
-                  driver_initials:
-                    type: string
-                  vehicle_registration_id:
-                    type: string
+                gps_id:
+                  type: string
+                driver_initials:
+                  type: string
+                vehicle_registration_id:
+                  type: string
               required:
-                tracker:
-                - gps_id
-                - driver_initials
-                - vehicle_registration_id
+              - gps_id
+              - driver_initials
+              - vehicle_registration_id
     get:
       summary: list trackers
       tags:
