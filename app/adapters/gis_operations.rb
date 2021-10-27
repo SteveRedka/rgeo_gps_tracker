@@ -41,13 +41,13 @@ module GisOperations
     y = b.y - a.y
     atan = Math.atan2(x, y)
     if -0.7853981633974483 <= atan && 0.7853981633974483 >= atan
-      return 'N'
+      "N"
     elsif 0.7853981633974483 <= atan && 2.356194490192345 >= atan
-      return 'E'
+      "E"
     elsif -2.356194490192345 <= atan && -0.7853981633974483 >= atan
-      return 'W'
+      "W"
     else
-      return 'S'
+      "S"
     end
   end
 end

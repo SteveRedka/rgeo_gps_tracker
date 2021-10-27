@@ -27,7 +27,7 @@ class Point < ApplicationRecord
       else
         self.coords = GisOperations.to_rgeo_point(coords[:lat], (coords[:lng] || coords[:lon]))
       end
-    elsif arg.is_a?(RGeo::Cartesian::PointImpl) or arg.is_a?(String)
+    elsif arg.is_a?(RGeo::Cartesian::PointImpl) || arg.is_a?(String)
       self.coords = arg
     else
       errors.add(:coords, message: "Wrong class for coords: #{arg.class}")
@@ -35,6 +35,6 @@ class Point < ApplicationRecord
   end
 
   def latlon
-    { lat: coords.y, lon: coords.x }
+    {lat: coords.y, lon: coords.x}
   end
 end

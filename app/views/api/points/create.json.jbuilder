@@ -6,7 +6,7 @@ if @tracker
       json.lng @point.latlon[:lon]
     end
   else
-    json.(@point.errors.messages)
+    json.call(@point.errors.messages)
   end
 else
   json.tracker do

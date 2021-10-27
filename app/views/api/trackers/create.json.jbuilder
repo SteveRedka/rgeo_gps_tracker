@@ -1,5 +1,5 @@
 if @tracker.valid?
-  json.(@tracker, :id, :gps_id, :driver_initials, :vehicle_registration_id)
+  json.call(@tracker, :id, :gps_id, :driver_initials, :vehicle_registration_id)
 else
-  json.(@tracker.errors.messages)
+  json.call(@tracker.errors.messages)
 end

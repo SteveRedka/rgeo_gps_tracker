@@ -1,4 +1,4 @@
-recuire 'factory_bot_rails'
+recuire "factory_bot_rails"
 
 class Api::DebugController < ApplicationController
   def reset_db

@@ -12,9 +12,9 @@ RSpec.describe Point, type: :model do
     end
   end
 
-  describe '#latlon=' do
-    it 'accepts hash as declaration' do
-      coords = { lat: 35.79282335, lng: -114.99325126 }
+  describe "#latlon=" do
+    it "accepts hash as declaration" do
+      coords = {lat: 35.79282335, lng: -114.99325126}
       str = "POINT(-114.99325126 35.79282335)"
 
       pt_str = Point.create(coords: str)
@@ -23,8 +23,8 @@ RSpec.describe Point, type: :model do
     end
   end
 
-  describe '#latlon' do
-    it 'returns a hash with latitude and longitude' do
+  describe "#latlon" do
+    it "returns a hash with latitude and longitude" do
       expect(point.latlon).to be_a(Hash)
       expect(point.latlon[:lat]).to be_a(Numeric)
       expect(point.latlon[:lon]).to be_a(Numeric)
