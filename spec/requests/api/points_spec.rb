@@ -42,6 +42,10 @@ RSpec.describe 'api/points', type: :request do
 
       response(404, 'tracker not found') do
         let(:gps_id) { 'undefined' }
+<<<<<<< HEAD
+=======
+        let(:point) { { point: { lat: 35.7, lng: -114.1, record_time: Time.now } } }
+>>>>>>> feat: PointsController
         run_test!
       end
     end
